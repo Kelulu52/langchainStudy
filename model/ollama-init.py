@@ -5,4 +5,4 @@ model = init_chat_model(
     model_provider="ollama",
     base_url="http://10.20.62.52:11434"
 )
-print((model.invoke("你是否有图片解析功能")))
+print((model.invoke("你是否有类似deepseek的thinking模式")))

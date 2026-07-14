@@ -11,6 +11,7 @@ model = init_chat_model(
 )
 
 #多模态数据，使用字典列表
+
 def encode_image(image_path, max_size=(1024, 1024), quality=80):
     img = Image.open(image_path)
     img.thumbnail(max_size, Image.Resampling.LANCZOS)
@@ -20,15 +21,34 @@ def encode_image(image_path, max_size=(1024, 1024), quality=80):
     img.save(buffer, format="JPEG", quality=quality)
     img_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
     return f"data:image/jpeg;base64,{img_base64}"
-
+#content_blocks
+def encode_image2(image_path, max_size=(1024, 1024), quality=80):
+    img = Image.open(image_path)
+    img.thumbnail(max_size, Image.Resampling.LANCZOS)
+    if img.mode in ("RGBA", "P"):
+        img = img.convert("RGB")
+    buffer = io.BytesIO()
+    img.save(buffer, format="JPEG", quality=quality)
+    img_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
+    return img_base64
 image_path = "jpgtest.jpg"
 base64_image = encode_image(image_path)
+#content_blocks
+base64_image2=encode_image2(image_path)
 
 response = model.invoke(
     [HumanMessage(
-        content=[
+        # content=[
+        #     {"type": "text", "text": "这张图里有什么？"},
+        #     {"type": "image_url", "image_url": base64_image}
+        # ]
+        content_blocks=[
             {"type": "text", "text": "这张图里有什么？"},
-            {"type": "image_url", "image_url": base64_image}
+            {
+                "type": "image",
+                "base64": base64_image2,
+                "mime_type": "image/jpeg"
+            }
         ]
     )]
 )

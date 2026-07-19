@@ -22,6 +22,7 @@ messages = [
 agent=create_agent(
     model=model2,
     middleware=[
+        #使用子模型对历史记录进行总结
         SummarizationMiddleware(
             model=model,
             trigger=[
